@@ -4,11 +4,15 @@ Not comfortable enough on the couch? Pull up footrest.
 
 ## Install
 
+Footrest is written completely in Erlang and only depends on the Erlang libraries used by CouchDB itself.
+
 1. Have the latest Erlang OTP (>= 5.7).
 
 2. Install CouchDB.
 
-3. Edit your /etc/couchdb/local.ini appending the following line:
+3. make
+
+4. Edit your /etc/couchdb/local.ini appending the following line:
 
     [external]
     footrest = /path/to/src/couchdb-footrest/footrest
@@ -16,6 +20,7 @@ Not comfortable enough on the couch? Pull up footrest.
     [httpd_db_handlers]
     _footrest = {couch_httpd_external, handle_external_req, <<"footrest">>}
 
+5. Restart CouchDB.
 
 ## Usage
 
