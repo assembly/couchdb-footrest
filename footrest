@@ -1,0 +1,33 @@
+#! /bin/sh -e
+
+INTERACTIVE_BOOLEAN=false
+
+start_footrest() {
+    interactive_option="+Bd -noinput"
+    final_statement="-s init stop"
+    if test "$INTERACTIVE_BOOLEAN" = "true"; then
+        interactive_option=""
+        final_statement=""
+    fi
+
+    command="`/usr/bin/icu-config --invoke` \
+      erl $interactive_option footrest.beam \
+        -pa /usr/local/lib/couchdb/erlang/lib/mochiweb*/ebin \
+            /usr/local/lib/couchdb/erlang/lib/ibrowse*/ebin \
+            "`dirname "$0"`" \
+        -s footrest init $final_statement"
+
+    exec $command
+    exit 1
+}
+
+parse_script_option_list () {
+    while [ $# -gt 0 ]; do
+      case "$1" in
+          -i) shift; INTERACTIVE_BOOLEAN=true;;
+      esac
+    done
+    start_footrest
+}
+
+parse_script_option_list $@
