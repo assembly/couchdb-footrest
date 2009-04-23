@@ -5,8 +5,11 @@ Not comfortable enough on the couch? Pull up footrest.
 ## Install
 
 1. Have the latest Erlang OTP (>= 5.7).
+
 2. Install CouchDB.
+
 3. Edit your /etc/couchdb/local.ini appending the following line:
+
     [external]
     footrest = /path/to/src/couchdb-footrest/footrest
 
