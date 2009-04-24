@@ -111,7 +111,7 @@ intersect_response({Response}, Keys) when is_list(Keys)->
         % Fold over remaining input rows
         lists:foldl(fun({El1},Acc1) ->
             {IRows1, ORows1} = Acc1,
-            RowKey = extract_value(<<"id">>,El1),
+            RowKey = extract_value(<<"key">>,El1),
             case RowKey == El of
               true -> {IRows1, ORows1 ++ [{El1}]};
               false -> {IRows1 ++ [{El1}], ORows1}
@@ -183,24 +183,18 @@ figure_true_path(RequestPath) ->
 %
 
 format_response({error, Type, Msg}) ->
-    {500, {}, ?l2b(atom_to_list(Type) ++ ": " ++ Msg)};
+    {500, {}, "\"" ++ atom_to_list(Type) ++ ": " ++ Msg ++ "\""};
 format_response({error, Msg}) ->
-    {500, {}, "error" ++ ": " ++ Msg};
+    {500, {}, "\" error" ++ ": " ++ Msg ++ "\""};
 format_response({ok, Response}) ->
-    {200, {}, ?JSON_DECODE(?l2b(Response))}.
+    {200, {}, Response}.
 
 finalize_response({Code, _Headers, Body}) ->
-    BodyType = case Code of
-        200 -> <<"json">>;
-        500 -> <<"body">>
+    ResponseStart = case Code of
+        200 -> "{\"code\":200,\"json\":";
+        500 -> "{\"code\":500,\"body\":"
     end,
-    ?JSON_ENCODE(
-        {[
-            {<<"code">>,Code},
-            % {<<"headers">>,Headers},
-            {BodyType,Body}
-        ]}
-    ) ++ "\n".
+    ResponseStart ++ Body ++ "}\n".
 
 
 %
